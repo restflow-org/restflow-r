@@ -1,0 +1,17 @@
+
+imports:
+
+- classpath:/org/restflow/types.yaml
+
+types:
+
+- id: RActor
+  className: org.restflow.r.RActor
+  singleton: false
+
+- id: RActorNode
+  type: Node
+  properties:
+    actor: !inline
+      type: RActor
+ 

@@ -1,0 +1,248 @@
+imports:
+
+- classpath:/org/restflow/r/types.yaml
+
+components:
+
+- id: Adder
+  type: RActor
+  properties:
+    step: |
+      sum <- a + b
+    inputs:
+      a: 
+        default: 0
+      b: 
+        default: 0
+    outputs: 
+      sum:
+    types:
+      a: Integer
+      b: Integer
+      sum: Integer
+      
+- id: ConstantSource
+  type: RActor
+  properties:
+    step: |
+      output <- value;
+    inputs: 
+      value:
+    outputs: 
+      value:
+
+- id: IntegerConstantSource
+  type: RActor
+  properties:
+    step: |
+      output <- value;
+    inputs: 
+      value:
+    outputs: 
+      value:
+    types:
+      value: Integer
+      output: Integer
+
+- id: Counter
+  type: RActor
+  properties:
+    initialize:
+      count = 0
+    step: |
+      count <- count + 1  
+    inputs: 
+      input:
+    outputs:
+      count:
+    state:
+      count:
+    types:
+      count: Integer 
+
+- id: IntegerBandpassFilter
+  type: RActor
+  properties:
+    step: |
+      if (input >= min && input <= max) {
+        output <- input
+      } else {
+        output <- 0
+        disableOutput("output")
+      }
+    inputs: 
+      min:
+      max:
+      input:
+    outputs: 
+      output:
+    types:
+      input: Integer
+      min: Integer
+      max: Integer
+      output: Integer
+              
+- id: IntegerSequenceGenerator
+  type: RActor
+  properties:
+    initialize: |
+      nextValue <- initial
+    step: |
+      value <- nextValue
+      nextValue <- nextValue + step
+      if (value > max) disableOutput("value")
+    state:
+      nextValue:
+    inputs:
+      initial: 
+        default: 1
+      step:
+        default: 1
+      max: 
+        default: 1
+    outputs:
+      value:
+    types:
+      initial: Integer
+      step: Integer
+      max: Integer
+      value: Integer
+      nextValue: Integer
+      
+
+- id: IntegerStreamMergerNoDuplicates
+  type: RActor
+  properties:
+    initialize: |
+      last <- 0
+      first <- TRUE
+      enableInput("a")
+      enableInput("b")
+    step: |
+      
+      if (is.null(a) & is.null(b)) {
+        disableOutput("c")
+      } else if (is.null(a)) {
+        c <- b
+        enableInput("b")
+      } else if (is.null(b)) {
+        c <- a
+        enableInput("a")
+      } else if (a < b) {
+        c <- a
+        enableInput("a")
+      } else if (a > b) {
+        c <- b
+        enableInput("b")
+      } else if (a == b) {
+        c <- a
+        enableInput("a")
+        enableInput("b")
+      }
+      
+      if (!is.null(c)) {
+        if (first) {
+          last <- c
+          first <- FALSE
+        } else {
+          if (c == last) {
+            disableOutput("c")
+          } else {
+            last <- c
+          }
+        }    
+      }
+    inputs: 
+      a:
+        optional: true
+        nullable: true
+        defaultReadiness: false
+      b:
+        optional: true
+        nullable: true
+        defaultReadiness: false
+    outputs: 
+      c:
+    state: 
+      a:
+      b:
+      last:
+      first:
+    types:
+      a: Integer
+      b: Integer
+      c: Integer
+      last: Integer
+      first: Boolean
+
+- id: Multiplier
+  type: RActor
+  properties:
+    step: product <- a * b
+    inputs: 
+      a:
+      b:
+    outputs: 
+      product:
+    types:
+      a: Number
+      b: Number
+      product: Number
+
+- id: PrintStreamWriter
+  type: RActor
+  properties:
+    initialize: |
+      buffer <- ''
+    step: |
+      if (buffer == '') {
+        buffer <- message
+      } else {
+        buffer <- paste(buffer, '_NEWLINE_', message, sep='')
+      }    
+      if (outputImmediately) {
+        cat(message, '\n', sep='')
+      }
+    wrapup: |
+      if (outputAtWrapup) {
+        if (!is.null(name)) cat('***', name, '***\n')
+        buffer <- gsub('_NEWLINE_', '\n', buffer)
+        cat(buffer, '\n', sep='')
+      }
+    inputs:
+      name:
+      message:
+      outputImmediately: 
+        default: true
+      outputAtWrapup: 
+        default: false
+    state:
+      name:
+      buffer:
+      outputAtWrapup:
+    types:
+      buffer: String
+      name: String
+      message: String
+      outputImmediately: Boolean
+      outputAtWrapup: Boolean
+
+- id: SingleUnitBuffer
+  type: ConstantSource
+
+- id: SingleUnitIntegerBuffer
+  type: IntegerConstantSource
+
+- id: StringConcatenator
+  type: RActor
+  properties:
+    step: |
+      concatenatedString <- paste(stringOne, stringTwo, sep='')
+    inputs:
+      stringOne:
+      stringTwo:
+    outputs: 
+      concatenatedString:
+    types:
+      stringOne: String
+      stringTwo: String
