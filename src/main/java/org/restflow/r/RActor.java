@@ -5,6 +5,16 @@ import org.restflow.actors.AugmentedScriptActor;
 
 public class RActor extends AugmentedScriptActor {
 
+	private static String OS_SPECIFIC_R_COMMAND;
+	
+	static {
+		if (System.getProperty("os.name").startsWith("Windows")) {
+			OS_SPECIFIC_R_COMMAND = "rterm --slave"; 
+		} else {
+			OS_SPECIFIC_R_COMMAND = "R --slave";
+		}
+	}
+	
 	@Override
 	public ActorScriptBuilder getNewScriptBuilder() {
 		return new RActor.ScriptBuilder();
@@ -12,7 +22,7 @@ public class RActor extends AugmentedScriptActor {
 	
 	@Override
 	public synchronized String getScriptRunCommand() {
-		return "rterm --slave";
+		return OS_SPECIFIC_R_COMMAND;
 	}
 	
 	@Override
