@@ -88,6 +88,8 @@ public class RActor extends AugmentedScriptActor {
 			return this;
 		}
 		
+		
+		
 		private ScriptBuilder _assignStringLiteral(String name, Object value) {
 			
 			_script.append(		name	)
@@ -162,84 +164,35 @@ public class RActor extends AugmentedScriptActor {
 			return this;
 		}
 
+		@Override
 		public ActorScriptBuilder appendSerializationBeginStatement() {
+			appendCode(		"outputList <- list();" 	);
 			return this;
 		}
-		
+
+		@Override
 		public ActorScriptBuilder appendSerializationEndStatement() {
+			_script.append( 	"cat(toJSON(outputList));"	);
 			return this;
 		}
 		
 		public ScriptBuilder appendVariableSerializationStatement(String name, String type) {
-			if (type == null || type.equals("String")) {
-				_appendStringVariableYamlPrinter(name);
-			} else if (type.equals("Boolean")) {
-				_appendBooleanVariableYamlPrinter(name);
-			} else {
-				_appendNonstringVariableYamlPrinter(name);
-			}
-			return this;
-		}
-
-		private ScriptBuilder _appendNonstringVariableYamlPrinter(String name) {
 			
-			_script.append(		"cat('"		)
-			   	   .append(		name		)
-			   	   .append( 	"', ':', "	)
-			   	   .append(		name		)
-			   	   .append( 	", '\\n')"	)
-			   	   .append(		EOL			);
-			
-			return this;
-		}
-
-		private ScriptBuilder _appendStringVariableYamlPrinter(String name) {
-			
-			_script.append(		"cat('"						)
-				   .append(		name						)
-				   .append( 	"', ' : \"', "				)
-				   .append(		name						)
-				   .append( 	", '\"', '\\n', sep='')"	)
-				   .append(		EOL							);
-
-			return this;
-		}
-
-		public ActorScriptBuilder _appendNullStringYamlPrintStatement(String name) {
-			
-			_script.append(		"cat('"			)
-				   .append(		name			)
-				   .append(		"', ': NULL'"	)
-				   .append(		EOL				);
-			
-			return this;
-		}
+			_script.append(		"outputList <- c(outputList, list(")
+			   .append(		name		)
+			   .append(		"="			)
+			   .append(		name		)
+			   .append(		"));"		)
+			   .append(		EOL			);
 		
+			return this;
+		}
 		
 		public ActorScriptBuilder appendNonNullStringVariableSerializationPrintStatement(String name) {
-			
-			_script.append(		"cat('"			)
-				   .append(		name			)
-				   .append( 	"', ':', "		)
-				   .append(		name			)
-				   .append( 	", '\\n')"		)
-				   .append(		EOL				);
-			
+			appendVariableSerializationStatement(name, null);
 			return this;
 		}
 
-		
-		private ScriptBuilder _appendBooleanVariableYamlPrinter(String name) {
-			
-			_script.append(		"cat('"							)
-				   .append(		name							)
-				   .append( 	"', ':', ifelse("				)
-				   .append(     name							)
-				   .append(		", 'true', 'false'), '\\n')"	)
-				   .append(		EOL								);	
-			
-			return this;
-		}
 
 		public ScriptBuilder appendInputControlFunctions() {
 
@@ -275,11 +228,15 @@ public class RActor extends AugmentedScriptActor {
 		}
 
 		@Override
-		public void appendScriptHeader(ActorScriptBuilder script,
-				String scriptType) {
+		public void appendScriptHeader(ActorScriptBuilder script, String scriptType) {
 			
+			appendComment(		"load required libraries"		);
+			appendCode(			"library(rjson)"			);
+			appendBlankLine();
 		}
-
+		
+		
+		
 		@Override
 		public ActorScriptBuilder appendScriptExitCommend() {
 			return this;

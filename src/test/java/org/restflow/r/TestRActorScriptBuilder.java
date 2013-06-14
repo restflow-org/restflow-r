@@ -322,38 +322,38 @@ public class TestRActorScriptBuilder extends RestFlowTestCase {
 		);
 	}
 	
-	public void testAppendVariableYamlPrintStatement_StringType() {
+	public void testAppendVariablePrintStatement_StringType() {
 		
 		ActorScriptBuilder builder = new RActor.ScriptBuilder();
 		
 		builder.appendVariableSerializationStatement("var_with_string_type", "String");
 		
 		assertEquals(
-				"cat('var_with_string_type', ' : \"', var_with_string_type, '\"', '\\n', sep='')" +EOL, 	
+				"outputList <- c(outputList, list(var_with_string_type=var_with_string_type));" +EOL, 	
 				builder.toString()
 		);		
 	}
 
-	public void testAppendVariableYamlPrintStatement_IntegerType() {
+	public void testAppendVariablePrintStatement_IntegerType() {
 		
 		ActorScriptBuilder builder = new RActor.ScriptBuilder();
 		
 		builder.appendVariableSerializationStatement("var_with_integer_type", "Integer");
 		
 		assertEquals(
-			"cat('var_with_integer_type', ':', var_with_integer_type, '\\n')"		+ EOL,
+			"outputList <- c(outputList, list(var_with_integer_type=var_with_integer_type));"		+ EOL,
 			builder.toString()
 		);		
 	}
 
-	public void testAppendVariableYamlPrintStatement_BooleanType() {
+	public void testAppendVariablePrintStatement_BooleanType() {
 		
 		ActorScriptBuilder builder = new RActor.ScriptBuilder();
 		
 		builder.appendVariableSerializationStatement("var_with_boolean_type", "Boolean");
 		
 		assertEquals(
-			"cat('var_with_boolean_type', ':', ifelse(var_with_boolean_type, 'true', 'false'), '\\n')"		+ EOL,
+			"outputList <- c(outputList, list(var_with_boolean_type=var_with_boolean_type));"		+ EOL,
 			builder.toString()
 		);		
 	}

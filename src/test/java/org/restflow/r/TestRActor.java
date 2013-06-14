@@ -32,7 +32,10 @@ public class TestRActor extends RestFlowTestCase {
 				
 		assertEquals(
 			"# AUGMENTED STEP SCRIPT FOR ACTOR Hello" 													+ EOL +
-			"" 																							+ EOL +
+			""																							+ EOL +
+			"# load required libraries"																	+ EOL +
+			"library(rjson)"																			+ EOL +
+			""																							+ EOL +
 			"# BEGINNING OF ORIGINAL SCRIPT" 															+ EOL +
 			"" 																							+ EOL +
 			"cat('Hello world!')" 																		+ EOL +
@@ -43,7 +46,8 @@ public class TestRActor extends RestFlowTestCase {
 			"cat('__END_OF_SCRIPT_OUTPUT__\\n')" 														+ EOL +
 			"" 																							+ EOL +
 			"# Serialization of actor outputs"															+ EOL +
-			"" 																							+ EOL 
+			"outputList <- list();"																		+ EOL +
+			"cat(toJSON(outputList));"																	+ EOL
 			, actor.getAugmentedStepScript());
 		
 		// run the workflow while capturing stdout and stderr 
@@ -77,6 +81,9 @@ public class TestRActor extends RestFlowTestCase {
 		assertEquals(
 			"# AUGMENTED STEP SCRIPT FOR ACTOR Hello" 													+ EOL +
 			"" 																							+ EOL +
+			"# load required libraries"																	+ EOL +
+			"library(rjson)"																			+ EOL +
+			""																							+ EOL +
 			"# define functions for enabling and disabling actor inputs" 								+ EOL +
 			"enableInput <- function(input) { enabledInputs <<- paste(enabledInputs, input) }" 			+ EOL +
 			"disableInput <- function(input) { disabledInputs <<- paste(disabledInputs, input) }" 		+ EOL +
@@ -97,11 +104,12 @@ public class TestRActor extends RestFlowTestCase {
 			"# signal end of output from original script" 												+ EOL +
 			"cat('__END_OF_SCRIPT_OUTPUT__\\n')"														+ EOL +
 			"" 																							+ EOL +
-			"# Serialization of actor outputs" 															+ EOL +
-			"cat('enabledInputs', ':', enabledInputs, '\\n')"											+ EOL +
-			"cat('disabledInputs', ':', disabledInputs, '\\n')"		 									+ EOL +
+			"# Serialization of actor outputs"															+ EOL +
+			"outputList <- list();"																		+ EOL +
+			"outputList <- c(outputList, list(enabledInputs=enabledInputs));"							+ EOL +
+			"outputList <- c(outputList, list(disabledInputs=disabledInputs));"							+ EOL +
 			""																							+ EOL +
-			"" 																							+ EOL 
+			"cat(toJSON(outputList));"																	+ EOL
 			, actor.getAugmentedStepScript());
 		
 		// run the workflow while capturing stdout and stderr 
@@ -133,6 +141,9 @@ public class TestRActor extends RestFlowTestCase {
 		assertEquals(
 			"# AUGMENTED STEP SCRIPT FOR ACTOR Hello" 													+ EOL +
 			"" 																							+ EOL +
+			"# load required libraries"																	+ EOL +
+			"library(rjson)"																			+ EOL +
+			""																							+ EOL +
 			"# define functions for enabling and disabling actor outputs" 								+ EOL +
 			"enableOutput <- function(output) { enabledOutputs <<- paste(enabledOutputs, output) }"		+ EOL +
 			"disableOutput <- function(output) { disabledOutputs <<- paste(disabledOutputs, output) }" 	+ EOL +
@@ -151,12 +162,13 @@ public class TestRActor extends RestFlowTestCase {
 			"cat('__END_OF_SCRIPT_OUTPUT__\\n')" 														+ EOL +
 			"" 																							+ EOL +
 			"# Serialization of actor outputs" 															+ EOL +
-			"cat('greeting', ' : \"', greeting, '\"', '\\n', sep='')"										+ EOL +
-			"" 																							+ EOL +
-			"cat('enabledOutputs', ':', enabledOutputs, '\\n')" 										+ EOL +
-			"cat('disabledOutputs', ':', disabledOutputs, '\\n')" 										+ EOL +
+			"outputList <- list();"																		+ EOL +
+			"outputList <- c(outputList, list(greeting=greeting));"										+ EOL +
 			""																							+ EOL +
-			"" 																							+ EOL 
+			"outputList <- c(outputList, list(enabledOutputs=enabledOutputs));"							+ EOL +
+			"outputList <- c(outputList, list(disabledOutputs=disabledOutputs));"						+ EOL +
+			""																							+ EOL +
+			"cat(toJSON(outputList));"																	+ EOL 
 			, actor.getAugmentedStepScript());
 		
 		// run the workflow while capturing stdout and stderr 
@@ -185,6 +197,9 @@ public class TestRActor extends RestFlowTestCase {
 		assertEquals(
 			"# AUGMENTED STEP SCRIPT FOR ACTOR Hello" 													+ EOL +
 			"" 																							+ EOL +
+			"# load required libraries"																	+ EOL +
+			"library(rjson)"																			+ EOL +
+			""																							+ EOL +
 			"# initialize actor state variables" 														+ EOL +
 			"greeting <- NULL" 																			+ EOL +
 			""							 																+ EOL +
@@ -198,9 +213,10 @@ public class TestRActor extends RestFlowTestCase {
 			"cat('__END_OF_SCRIPT_OUTPUT__\\n')" 														+ EOL +
 			""							 																+ EOL +
 			"# Serialization of actor outputs" 															+ EOL +
-			"cat('greeting', ' : \"', greeting, '\"', '\\n', sep='')"									+ EOL +
-			"" 																							+ EOL +
-			"" 																							+ EOL 
+			"outputList <- list();"																		+ EOL +
+			"outputList <- c(outputList, list(greeting=greeting));"										+ EOL +
+			""																							+ EOL +
+			"cat(toJSON(outputList));"																	+ EOL 
 			, actor.getAugmentedStepScript());
 		
 		// run the workflow while capturing stdout and stderr 
@@ -240,6 +256,9 @@ public class TestRActor extends RestFlowTestCase {
 		assertEquals(
 			"# AUGMENTED STEP SCRIPT FOR ACTOR Multiplier"												+ EOL +
 			""																							+ EOL +
+			"# load required libraries"																	+ EOL +
+			"library(rjson)"																			+ EOL +
+			""																							+ EOL +
 			"# define functions for enabling and disabling actor inputs" 								+ EOL +
 			"enableInput <- function(input) { enabledInputs <<- paste(enabledInputs, input) }" 			+ EOL +
 			"disableInput <- function(input) { disabledInputs <<- paste(disabledInputs, input) }" 		+ EOL +
@@ -270,15 +289,16 @@ public class TestRActor extends RestFlowTestCase {
 			"cat('__END_OF_SCRIPT_OUTPUT__\\n')"														+ EOL +
 			""																							+ EOL +
 			"# Serialization of actor outputs"															+ EOL +
-			"cat('z', ':', z, '\\n')"																	+ EOL +
+			"outputList <- list();"																		+ EOL +
+			"outputList <- c(outputList, list(z=z));"													+ EOL +
 			""																							+ EOL +
-			"cat('enabledInputs', ':', enabledInputs, '\\n')"											+ EOL +
-			"cat('disabledInputs', ':', disabledInputs, '\\n')"											+ EOL +
+			"outputList <- c(outputList, list(enabledInputs=enabledInputs));"							+ EOL +
+			"outputList <- c(outputList, list(disabledInputs=disabledInputs));"							+ EOL +
 			""																							+ EOL +
-			"cat('enabledOutputs', ':', enabledOutputs, '\\n')"											+ EOL +
-			"cat('disabledOutputs', ':', disabledOutputs, '\\n')" 										+ EOL +
-			"" 																							+ EOL +
-			"" 																							+ EOL
+			"outputList <- c(outputList, list(enabledOutputs=enabledOutputs));"							+ EOL +
+			"outputList <- c(outputList, list(disabledOutputs=disabledOutputs));"						+ EOL +
+			""																							+ EOL +
+			"cat(toJSON(outputList));"																	+ EOL 
 			, actor.getAugmentedStepScript());
 		
 		// run the workflow while capturing stdout and stderr 
