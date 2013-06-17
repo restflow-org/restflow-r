@@ -1,0 +1,61 @@
+imports:
+
+- classpath:/org/restflow/r/types.yaml
+
+components:
+
+- id: TableReader
+  type: RActor
+  properties:
+    
+    usesStepDirectory: true
+    
+    inputs:
+      filePath:
+        type: String
+      header:
+        type: Boolean
+        default: false
+      fill:
+        type: Boolean
+        default: false
+      separator:
+        type: String
+        default: "\t"
+      nrows:
+        type: Integer
+        default: -1
+      skip:
+        type: Integer
+        default: 0
+      outputFormat:
+        type: String
+        default: RData
+    
+    step: |
+    
+      # read the data file into a dataframe
+      dataframe <- read.table(filePath, sep=separator, header=header, 
+        nrows=nrows, skip=skip, fill=fill, as.is = TRUE)
+
+      # extract the file name from the file path
+      fileName = basename(filePath)
+
+      # attach file path and name to the dataframe as attributes
+      attr(dataframe,"FilePath") <- filePath
+      attr(dataframe,"File") <- fileName
+      
+      # save the dataframe to a file
+      if (outputFormat == "RData") {
+          RDataFile <- 'dataframe.RData'
+          save(dataframe, file=RDataFile)
+      } else {
+          RDataFile <- ''
+      }
+    outputs:
+      fileName:
+        type: String
+      RDataFile:
+        type: File
+        nullable: true
+        

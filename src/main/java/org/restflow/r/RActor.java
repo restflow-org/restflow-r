@@ -3,6 +3,8 @@ package org.restflow.r;
 import org.restflow.actors.ActorScriptBuilder;
 import org.restflow.actors.AugmentedScriptActor;
 
+import com.google.gson.Gson;
+
 public class RActor extends AugmentedScriptActor {
 
 	private static String OS_SPECIFIC_R_COMMAND;
@@ -75,7 +77,11 @@ public class RActor extends AugmentedScriptActor {
 				_assignNullLiteral(name);
 			} else if (type == null) {
 				_assignStringLiteral(name, value);
+			} else if (type.equals("Json")) {
+				_assignJsonLiteral(name, value);
 			} else if (type.equals("String")) {
+				_assignStringLiteral(name, value);
+			} else if (type.equals("File")) {
 				_assignStringLiteral(name, value);
 			} else if (type.equals("Boolean")) {
 				_assignBooleanLiteral(name, value, type);
@@ -88,8 +94,6 @@ public class RActor extends AugmentedScriptActor {
 			return this;
 		}
 		
-		
-		
 		private ScriptBuilder _assignStringLiteral(String name, Object value) {
 			
 			_script.append(		name	)
@@ -98,6 +102,20 @@ public class RActor extends AugmentedScriptActor {
 				   .append( 	value	)
 				   .append( 	"'"		)
 				   .append(		EOL		);
+			
+			return this;
+		}
+		
+		private ScriptBuilder _assignJsonLiteral(String name, Object value) {
+
+			Gson gson = new Gson();
+			String json = gson.toJson(value);
+			
+			_script.append(		name				)
+				   .append( 	" <- fromJSON('"	)
+				   .append( 	json				)
+				   .append( 	"')"				)
+				   .append(		EOL					);
 			
 			return this;
 		}
@@ -232,7 +250,10 @@ public class RActor extends AugmentedScriptActor {
 			
 			appendComment(		"load required libraries"		);
 			appendCode(			"library(rjson)"			);
+//			appendCode(			"library(RJSONIO)"			);
 			appendBlankLine();
+			
+//			System.out.println("Using rjson");
 		}
 		
 		
