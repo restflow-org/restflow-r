@@ -28,9 +28,6 @@ components:
       skip:
         type: Integer
         default: 0
-      outputFormat:
-        type: String
-        default: RData
     
     step: |
     
@@ -46,16 +43,12 @@ components:
       attr(dataframe,"File") <- fileName
       
       # save the dataframe to a file
-      if (outputFormat == "RData") {
-          RDataFile <- 'dataframe.RData'
-          save(dataframe, file=RDataFile)
-      } else {
-          RDataFile <- ''
-      }
+      RDataFile <- 'dataframe.RData'
+      save(dataframe, file=RDataFile, compress=T)
+      
     outputs:
       fileName:
         type: String
       RDataFile:
         type: File
-        nullable: true
         
