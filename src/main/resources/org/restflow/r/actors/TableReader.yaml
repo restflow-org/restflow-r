@@ -11,23 +11,13 @@ components:
     usesStepDirectory: true
     
     inputs:
-      filePath:
-        type: String
-      header:
-        type: Boolean
-        default: false
-      fill:
-        type: Boolean
-        default: false
-      separator:
-        type: String
-        default: "\t"
-      nrows:
-        type: Integer
-        default: -1
-      skip:
-        type: Integer
-        default: 0
+    
+      filePath:   { type: String                  }
+      header:     { type: Boolean, default: false }
+      fill:       { type: Boolean, default: false }
+      separator:  { type: String,  default: '\t'  }
+      nrows:      { type: Integer, default: -1    }
+      skip:       { type: Integer, default: 0     }
     
     step: |
     
@@ -43,12 +33,11 @@ components:
       attr(dataframe,"File") <- fileName
       
       # save the dataframe to a file
-      RDataFile <- 'dataframe.RData'
-      save(dataframe, file=RDataFile, compress=T)
+      rData <- 'dataframe.RData'
+      save(dataframe, file=rData, compress=T)
       
     outputs:
-      fileName:
-        type: String
-      RDataFile:
-        type: File
+    
+      fileName:   { type: String }
+      rData:      { type: File   }
         
