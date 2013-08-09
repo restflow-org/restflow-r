@@ -262,5 +262,11 @@ public class RActor extends AugmentedScriptActor {
 		public ActorScriptBuilder appendScriptExitCommend() {
 			return this;
 		}
+
+		@Override
+		public ActorScriptBuilder appendOutputVariableSerializationStatement(
+				String name, String type) {
+			return appendVariableSerializationStatement(name, type);
+		}
 	}
 }
