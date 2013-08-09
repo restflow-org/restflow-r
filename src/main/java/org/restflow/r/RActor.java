@@ -17,6 +17,11 @@ public class RActor extends AugmentedScriptActor {
 		}
 	}
 	
+	public RActor() {
+		super();
+		_scriptExtension = "r";
+	}
+	
 	@Override
 	public ActorScriptBuilder getNewScriptBuilder() {
 		return new RActor.ScriptBuilder();
