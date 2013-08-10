@@ -42,6 +42,10 @@ public class RActor extends AugmentedScriptActor {
 		private StringBuilder _script = new StringBuilder();
 		private final static String EOL = System.getProperty("line.separator");
 
+		public ActorScriptBuilder append(String text) {
+			_script.append(		text	);
+			return this;
+		}
 		public ActorScriptBuilder appendCode(String code) {
 			
 			_script.append(		code	)
