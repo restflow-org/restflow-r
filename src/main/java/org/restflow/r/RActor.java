@@ -13,7 +13,7 @@ public class RActor extends AugmentedScriptActor {
 		if (System.getProperty("os.name").startsWith("Windows")) {
 			OS_SPECIFIC_R_COMMAND = "rterm --slave"; 
 		} else {
-			OS_SPECIFIC_R_COMMAND = "R --slave";
+			OS_SPECIFIC_R_COMMAND = "/usr/local/bin/R --slave";
 		}
 	}
 	
